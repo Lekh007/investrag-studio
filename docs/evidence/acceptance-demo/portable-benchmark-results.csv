@@ -1,0 +1,16 @@
+question_id,vector_store,profile,success_at_k,recall_at_k,reciprocal_rank,ndcg_at_k,retrieval_ms,predicted_abstention,abstention_correct
+q1,faiss,hybrid,1.0,1.0,1.0,0.9669850519151656,156.608,False,True
+q2,faiss,hybrid,1.0,1.0,1.0,0.9876712785649565,172.534,False,True
+q3,faiss,hybrid,1.0,1.0,1.0,1.0,155.629,False,True
+q4,faiss,hybrid,1.0,1.0,1.0,1.0,153.984,False,True
+q5,faiss,hybrid,0.0,0.0,0.0,0.0,156.137,True,True
+q1,chroma,hybrid,1.0,1.0,1.0,0.9669850519151656,130.138,False,True
+q2,chroma,hybrid,1.0,1.0,1.0,0.9876712785649565,146.846,False,True
+q3,chroma,hybrid,1.0,1.0,1.0,1.0,136.219,False,True
+q4,chroma,hybrid,1.0,1.0,1.0,1.0,163.624,False,True
+q5,chroma,hybrid,0.0,0.0,0.0,0.0,151.192,True,True
+q1,qdrant,hybrid,1.0,1.0,1.0,0.9669850519151656,134.623,False,True
+q2,qdrant,hybrid,1.0,1.0,1.0,0.9876712785649565,144.619,False,True
+q3,qdrant,hybrid,1.0,1.0,1.0,1.0,144.703,False,True
+q4,qdrant,hybrid,1.0,1.0,1.0,1.0,142.077,False,True
+q5,qdrant,hybrid,0.0,0.0,0.0,0.0,165.104,True,True

@@ -1,0 +1,54 @@
+services:
+  pgvector:
+    image: pgvector/pgvector:pg17
+    environment:
+      POSTGRES_USER: investrag
+      POSTGRES_PASSWORD: investrag
+      POSTGRES_DB: investrag
+    ports:
+      - "5433:5432"
+    volumes:
+      - investrag_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U investrag -d investrag"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  # Weaviate is the only local store that genuinely needs Docker in this project.
+  # FAISS/Chroma/Qdrant/Milvus all run embedded (Qdrant and Milvus via their local-
+  # file client modes, verified on Windows 2026-08-30); Weaviate has no supported
+  # embedded mode on Windows, so it runs behind its own compose profile - started
+  # only when explicitly requested (`docker compose --profile weaviate up -d`), so
+  # it is never running at the same time as a database-benchmark session by
+  # accident (design §19's sequential-heavy-services rule).
+  weaviate:
+    image: cr.weaviate.io/semitechnologies/weaviate:1.39.2
+    profiles: ["weaviate"]
+    command:
+      - --host
+      - 0.0.0.0
+      - --port
+      - "8080"
+      - --scheme
+      - http
+    ports:
+      - "8090:8080"
+      - "50052:50051"
+    environment:
+      QUERY_DEFAULTS_LIMIT: 25
+      AUTHENTICATION_ANONYMOUS_ACCESS_ENABLED: "true"
+      PERSISTENCE_DATA_PATH: "/var/lib/weaviate"
+      CLUSTER_HOSTNAME: "investrag-node1"
+      DEFAULT_VECTORIZER_MODULE: "none"
+    volumes:
+      - investrag_weaviate_data:/var/lib/weaviate
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:8080/v1/.well-known/ready"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  investrag_pgdata:
+  investrag_weaviate_data:
