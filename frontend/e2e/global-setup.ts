@@ -18,7 +18,9 @@ import { setTimeout as sleep } from 'node:timers/promises'
  */
 
 const BACKEND_DIR = resolve(import.meta.dirname, '../../backend')
-const DATA_DIR = resolve(import.meta.dirname, '../../../.data/investrag-e2e')
+// `global-setup.ts` lives at frontend/e2e; two parent steps reach the
+// repository root, so the e2e catalog/index stays inside this standalone repo.
+const DATA_DIR = resolve(import.meta.dirname, '../../.data/investrag-e2e')
 const PYTHON = resolve(BACKEND_DIR, '.venv/Scripts/python.exe')
 const BACKEND_PORT = 8010
 
@@ -59,6 +61,9 @@ export default async function globalSetup(): Promise<() => Promise<void>> {
       cwd: BACKEND_DIR,
       stdio: ['ignore', 'pipe', 'pipe'],
       env: backendEnv,
+      // Docling/RapidOCR can emit a large diagnostic stream on first load;
+      // Node's 1 MiB default would terminate a successful seed with ENOBUFS.
+      maxBuffer: 16 * 1024 * 1024,
     })
   } catch (error) {
     const err = error as { stdout?: Buffer; stderr?: Buffer; message: string }
